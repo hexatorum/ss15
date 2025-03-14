@@ -30,6 +30,7 @@ dependencies:
 - hslua
 - network
 - aeson
+- text
 
 ghc-options:
 - -Wall
@@ -42,15 +43,25 @@ ghc-options:
 - -Wpartial-fields
 - -Wredundant-constraints
 - -XTypeFamilies
+- -XDataKinds
+- -XFlexibleContexts
+- -XFlexibleInstances
+- -XMultiParamTypeClasses
+- -XScopedTypeVariables
+- -XTemplateHaskell
+- -XTypeApplications
+- -XGeneralizedNewtypeDeriving
 
 library:
-  source-dirs: src
+  source-dirs: src/data
 
 executables:
   space-station15-client:
     main:                Main.hs
     source-dirs:
     - app/server
+    - src/server
+    - src/shared
     ghc-options:
     - -threaded
     - -rtsopts
@@ -62,6 +73,8 @@ executables:
     main:                Main.hs
     source-dirs:
     - app/client
+    - src/client
+    - src/shared
     ghc-options:
     - -threaded
     - -rtsopts
