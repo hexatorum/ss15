@@ -24,21 +24,43 @@ source-repository head
   location: https://github.com/githubuser/space-station15
 
 library
+  exposed-modules:
+      Comms
+      Material
+      Shared.Components.Atmos
+      Shared.Components.Damage
+      Shared.Components.Movement
+      Shared.Components.Physics
+      Shared.Components.Tiles
   other-modules:
       Paths_space_station15
   autogen-modules:
       Paths_space_station15
   hs-source-dirs:
       src/lib
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -XTypeFamilies -XDataKinds -XFlexibleContexts -XFlexibleInstances -XMultiParamTypeClasses -XScopedTypeVariables -XTemplateHaskell -XTypeApplications -XGeneralizedNewtypeDeriving
+      src/shared
+  default-extensions:
+      TypeFamilies
+      DataKinds
+      FlexibleContexts
+      FlexibleInstances
+      MultiParamTypeClasses
+      ScopedTypeVariables
+      TemplateHaskell
+      TypeApplications
+      GeneralizedNewtypeDeriving
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      aeson
+      OpenAL
+    , OpenGL
+    , aeson
     , apecs
     , base >=4.7 && <5
     , containers
     , hslua
     , linear
     , network
+    , random
     , sdl2
     , sdl2-image
     , sdl2-ttf
@@ -49,23 +71,34 @@ executable space-station15-client
   main-is: Main.hs
   other-modules:
       Client.Components.Visual
-      Shared.Components.Position
       Paths_space_station15
   autogen-modules:
       Paths_space_station15
   hs-source-dirs:
       app/client
       src/client
-      src/shared
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -XTypeFamilies -XDataKinds -XFlexibleContexts -XFlexibleInstances -XMultiParamTypeClasses -XScopedTypeVariables -XTemplateHaskell -XTypeApplications -XGeneralizedNewtypeDeriving -threaded -rtsopts -with-rtsopts=-N
+  default-extensions:
+      TypeFamilies
+      DataKinds
+      FlexibleContexts
+      FlexibleInstances
+      MultiParamTypeClasses
+      ScopedTypeVariables
+      TemplateHaskell
+      TypeApplications
+      GeneralizedNewtypeDeriving
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      OpenAL
+    , OpenGL
+    , aeson
     , apecs
     , base >=4.7 && <5
     , containers
     , hslua
     , linear
     , network
+    , random
     , sdl2
     , sdl2-image
     , sdl2-ttf
@@ -77,23 +110,34 @@ executable space-station15-server
   main-is: Main.hs
   other-modules:
       Server.World
-      Shared.Components.Position
       Paths_space_station15
   autogen-modules:
       Paths_space_station15
   hs-source-dirs:
       app/server
       src/server
-      src/shared
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -XTypeFamilies -XDataKinds -XFlexibleContexts -XFlexibleInstances -XMultiParamTypeClasses -XScopedTypeVariables -XTemplateHaskell -XTypeApplications -XGeneralizedNewtypeDeriving -threaded -rtsopts -with-rtsopts=-N
+  default-extensions:
+      TypeFamilies
+      DataKinds
+      FlexibleContexts
+      FlexibleInstances
+      MultiParamTypeClasses
+      ScopedTypeVariables
+      TemplateHaskell
+      TypeApplications
+      GeneralizedNewtypeDeriving
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      OpenAL
+    , OpenGL
+    , aeson
     , apecs
     , base >=4.7 && <5
     , containers
     , hslua
     , linear
     , network
+    , random
     , sdl2
     , sdl2-image
     , sdl2-ttf

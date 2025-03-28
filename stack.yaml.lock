@@ -25,6 +25,20 @@ packages:
       size: 447
   original:
     hackage: sdl2-ttf-2.1.3
+- completed:
+    hackage: OpenGL-3.0.3.0@sha256:bcd8a08d9e2679b28faffffa71e3c7cc101bb72d7518ead85155dd3a194a2988,7875
+    pantry-tree:
+      sha256: 7c0e2739e9c16b1658e5f2a9a2848b36c92fd854a138cbfa53a4473c23a739eb
+      size: 11166
+  original:
+    hackage: OpenGL-3.0.3.0
+- completed:
+    hackage: OpenAL-1.7.0.5@sha256:cbc2a089b66705adc34d72eb3fb2c4bc757abb46d166e02ca27d7191aab3becc,3423
+    pantry-tree:
+      sha256: 1b6487ef70214655e78096d66450e689f04fbb2323cfc16769d60589ac3b5b92
+      size: 2461
+  original:
+    hackage: OpenAL-1.7.0.5
 snapshots:
 - completed:
     sha256: ecb944087cba3b8e85ff75d279bbb878615127e44d1b0485c511834c56ee6929
