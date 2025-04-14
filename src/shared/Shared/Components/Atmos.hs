@@ -14,6 +14,7 @@ type Mol = Float
 type Name = String
 type MolecularIdentifier = String
 type HeatCapacity = Float
+type Temp = Float
 
 data GasDef = GasDef Name MolecularIdentifier HeatCapacity deriving Eq
 
@@ -24,19 +25,20 @@ type Factor = GasDef -- gas factors required for a gas reaction to be present.
 
 data ReactionDef = ReactionDef Name [Factor] deriving (Eq, Show)
 
-data Gas = Gas GasDef Mol deriving Show
+data Gas = Gas GasDef Mol Temp deriving Show
 
 data Mixture = Mixture { volume :: Float -- liters
-  , temperature :: Float -- kelvin
-  , pressure :: Float -- pascals
-  , energy :: Float -- joules
+  , temperature :: Float -- kelvin (total temperature of the mixture)
+  , pressure :: Float -- pascals (total pressure of the mixture)
+  , energy :: Float -- joules (total energy of the mixture)
+  , heat_capacity :: Float -- total heat capacity of the mixture
   , gases :: [Gas]
   , reactions :: [ReactionDef]
   } deriving Show
 
-type MaxPressure = Float
+type PressureCap = Float
 
-data AtmosContainer = AtmosContainer MaxPressure Mixture deriving Show
+data AtmosContainer = AtmosContainer PressureCap Mixture deriving Show
 instance Component AtmosContainer where type Storage AtmosContainer = Map AtmosContainer
 
 newtype Temperature = Temperature Float deriving Show
