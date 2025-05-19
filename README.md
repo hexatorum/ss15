@@ -8,18 +8,10 @@ Space Station 15 is a remake of Space Station 13 built from scratch in Haskell, 
 ## Prerequisites
 - [Git](https://git-scm.com/downloads)
 - [Stack](https://docs.haskellstack.org/en/stable/#how-to-install-stack)
+
 ## Windows
 **NOTE:** This method of building currently does not work.
 
-<<<<<<< HEAD
-1. Clone this repo
-2. Run `stack build --haddock-docs` at the root
-3. Run `stack hoogle -- generate --local` to build the hoogle docs
-
-You will get 2 executables: space-station15-client and space-station15-server. Run them with `stack exec`.
-
-Run `stack hoogle -- server --local --port=8080` on a separate terminal if u are planning to make changes, then connect to https://localhost:8080.
-=======
 1. Install SDL2 and OpenAL using this command:
     
     ```
@@ -35,7 +27,7 @@ Run `stack hoogle -- server --local --port=8080` on a separate terminal if u are
 3. To build, run:
 
     ```
-    stack build
+    stack build --haddock-docs
     ```
     
     This will produce two executables: `space-station15-client` and `space-station15-server`. Run them with the command:
@@ -44,8 +36,8 @@ Run `stack hoogle -- server --local --port=8080` on a separate terminal if u are
     stack exec [executable name]
     ```
 
-## macOS (not supported)
-macOS is not supported at this moment. Help with building on macOS would be appreciated.
+## macOS
+macOS building works similarly to Linux, please refer to stack docs for further information.
 
 ## Linux
 1. Install development libraries for SDL2 and OpenAL with your package manager.
@@ -60,4 +52,14 @@ macOS is not supported at this moment. Help with building on macOS would be appr
     ```
     stack exec [executable name]
     ```
->>>>>>> refs/remotes/origin/main
+
+# Hoogle
+1. To build hoogle, run:
+```
+stack hoogle -- generate --local
+```
+
+2. To run the hoogle server, run:
+```
+stack hoogle -- server --local --port=8080
+```

@@ -83,7 +83,6 @@ default-extensions:
 - TypeApplications
 - GeneralizedNewtypeDeriving
 - OverloadedStrings
-<<<<<<< HEAD
 - ConstraintKinds
 - RankNTypes
 - DefaultSignatures
@@ -91,8 +90,6 @@ default-extensions:
 - ExistentialQuantification
 - FunctionalDependencies
 - GADTs
-=======
->>>>>>> refs/remotes/origin/main
 
 executables:
   space-station15-client:

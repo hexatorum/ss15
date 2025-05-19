@@ -70,7 +70,6 @@ library
       TypeApplications
       GeneralizedNewtypeDeriving
       OverloadedStrings
-<<<<<<< HEAD
       ConstraintKinds
       RankNTypes
       DefaultSignatures
@@ -78,8 +77,6 @@ library
       ExistentialQuantification
       FunctionalDependencies
       GADTs
-=======
->>>>>>> refs/remotes/origin/main
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       OpenAL
@@ -141,7 +138,6 @@ executable space-station15-client
       TypeApplications
       GeneralizedNewtypeDeriving
       OverloadedStrings
-<<<<<<< HEAD
       ConstraintKinds
       RankNTypes
       DefaultSignatures
@@ -149,8 +145,6 @@ executable space-station15-client
       ExistentialQuantification
       FunctionalDependencies
       GADTs
-=======
->>>>>>> refs/remotes/origin/main
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       OpenAL
@@ -212,7 +206,6 @@ executable space-station15-server
       TypeApplications
       GeneralizedNewtypeDeriving
       OverloadedStrings
-<<<<<<< HEAD
       ConstraintKinds
       RankNTypes
       DefaultSignatures
@@ -220,8 +213,6 @@ executable space-station15-server
       ExistentialQuantification
       FunctionalDependencies
       GADTs
-=======
->>>>>>> refs/remotes/origin/main
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       OpenAL
