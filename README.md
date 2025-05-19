@@ -8,6 +8,7 @@ Space Station 15 is a remake of Space Station 13 built from scratch in Haskell, 
 ## Prerequisites
 - [Git](https://git-scm.com/downloads)
 - [Stack](https://docs.haskellstack.org/en/stable/#how-to-install-stack)
+
 ## Windows
 **NOTE:** This method of building currently does not work.
 
@@ -26,7 +27,7 @@ Space Station 15 is a remake of Space Station 13 built from scratch in Haskell, 
 3. To build, run:
 
     ```
-    stack build
+    stack build --haddock-docs
     ```
     
     This will produce two executables: `space-station15-client` and `space-station15-server`. Run them with the command:
@@ -35,8 +36,8 @@ Space Station 15 is a remake of Space Station 13 built from scratch in Haskell, 
     stack exec [executable name]
     ```
 
-## macOS (not supported)
-macOS is not supported at this moment. Help with building on macOS would be appreciated.
+## macOS
+macOS building works similarly to Linux, please refer to stack docs for further information.
 
 ## Linux
 1. Install development libraries for SDL2 and OpenAL with your package manager.
@@ -51,3 +52,14 @@ macOS is not supported at this moment. Help with building on macOS would be appr
     ```
     stack exec [executable name]
     ```
+
+# Hoogle
+1. To build hoogle, run:
+```
+stack hoogle -- generate --local
+```
+
+2. To run the hoogle server, run:
+```
+stack hoogle -- server --local --port=8080
+```
