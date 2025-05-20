@@ -54,6 +54,9 @@ library
       LambdaCase
       MultiWayIf
       NamedFieldPuns
+      DisambiguateRecordFields
+      DuplicateRecordFields
+      RecordWildCards
       TupleSections
       DeriveFoldable
       DeriveFunctor
@@ -123,6 +126,9 @@ executable space-station15-client
       LambdaCase
       MultiWayIf
       NamedFieldPuns
+      DisambiguateRecordFields
+      DuplicateRecordFields
+      RecordWildCards
       TupleSections
       DeriveFoldable
       DeriveFunctor
@@ -191,6 +197,9 @@ executable space-station15-server
       LambdaCase
       MultiWayIf
       NamedFieldPuns
+      DisambiguateRecordFields
+      DuplicateRecordFields
+      RecordWildCards
       TupleSections
       DeriveFoldable
       DeriveFunctor
