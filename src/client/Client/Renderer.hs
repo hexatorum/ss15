@@ -7,5 +7,6 @@ import qualified Graphics.Rendering.OpenGL.GL as GL
 
 data Renderer = Renderer {
   window :: SDL.Window,
-  program :: GL.Program
+  program :: GL.Program,
+  texture :: GL.TextureObject
 }
