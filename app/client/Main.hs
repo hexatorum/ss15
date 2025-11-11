@@ -28,38 +28,6 @@ import Client.Renderer (Renderer(..))
 import qualified Client.Renderer as Renderer
 import qualified Client.Renderer.Shader as Shader
 
-{-
-  HELPERS
--}
--- TODO: move to separate file
-m44ToGL :: M44 Float -> IO (GL.GLmatrix GL.GLfloat)
-m44ToGL m = GL.newMatrix GL.ColumnMajor [
-  e0, e4, e8, eC,
-  e1, e5, e9, eD,
-  e2, e6, eA, eE,
-  e3, e7, eB, eF
-  ]
-  where
-    V4
-      (V4 e0 e1 e2 e3)
-      (V4 e4 e5 e6 e7)
-      (V4 e8 e9 eA eB)
-      (V4 eC eD eE eF) = m
-
--- TODO: this too
--- TODO: i thought about changing loadImage to withImage which is pretty much the same thing but
--- with a closure so i guess this is a TODO now
-loadImage :: FilePath -> IO (Either String (Image PixelRGBA8))
-loadImage file = do
-  dynImage <- readImage file
-  case dynImage of
-    Left error -> pure (Left error)
-    Right (ImageRGBA8 image) -> pure (Right image)
-    Right image -> pure (Right $ convertRGBA8 image)
-
-{-
-  RENDERING
--}
 vertices :: Vector Float 
 vertices = Vector.fromList [
   0, 0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
@@ -70,9 +38,6 @@ vertices = Vector.fromList [
   400, 210, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
   ]
 
-{-
-  INPUT
--}
 action :: Intent -> IO ()
 action Intent.Quit = exitSuccess
 action _ = pure ()
@@ -140,10 +105,6 @@ loop renderer = do
 
   unless quit $ loop renderer
 
-{-
-  MAIN
--}
-main :: IO ()
 main = do
   SDL.initialize [SDL.InitVideo]
 
@@ -154,12 +115,7 @@ main = do
     SDL.windowGraphicsContext = SDL.OpenGLContext SDL.defaultOpenGL
   }
   
-  eitherImage <- loadImage "assets/ss15_icon.png"
-  image <- case eitherImage of
-    Left error -> do
-      hPutStrLn stderr error
-      exitFailure
-    Right image -> return image
+  image <- Renderer.loadImage "assets/ss15_icon.png"
   
   let
     width = fromIntegral (imageWidth image)
@@ -210,12 +166,7 @@ main = do
 
   GL.textureFilter GL.Texture2D $= ((GL.Linear', Nothing), GL.Linear')
 
-  eitherImage <- loadImage "assets/ss15_full_title.png"
-  image <- case eitherImage of
-    Left error -> do
-      hPutStrLn stderr error
-      exitFailure
-    Right image -> return image
+  image <- Renderer.loadImage "assets/ss15_full_title.png"
 
   let
     width = fromIntegral (imageWidth image)
@@ -233,7 +184,7 @@ main = do
   
   Shader.setUniform shader "u_texture" (GL.TextureUnit 0)
 
-  projection <- m44ToGL $ ortho 0 640 480 0 (-1) 1
+  projection <- Renderer.m44ToGL $ ortho 0 640 480 0 (-1) 1
   Shader.setUniform shader "u_projection" projection
 
   let renderer = Renderer {
