@@ -25,18 +25,18 @@ dependencies:
 - vector
 - lens
 - sdl2
-- sdl2-image
-- sdl2-ttf
 - apecs
 - linear
 - containers
-- hslua
 - network
 - aeson
 - text
 - random
 - OpenAL
 - OpenGL
+- StateVar
+- dear-imgui
+- JuicyPixels
 
 library:
   source-dirs:
@@ -96,7 +96,7 @@ default-extensions:
 
 executables:
   space-station15-client:
-    main:                Main.hs
+    main: Main.hs
     source-dirs:
     - app/client
     - src/client
@@ -107,8 +107,20 @@ executables:
     dependencies:
     - space-station15
 
+  space-station15-editor:
+    main: Main.hs
+    source-dirs:
+    - app/editor
+    - src/client
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - space-station15
+
   space-station15-server:
-    main:                Main.hs
+    main: Main.hs
     source-dirs:
     - app/server
     - src/server
