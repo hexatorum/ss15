@@ -7,4 +7,4 @@ import GHC.Generics(Generic)
 data ConnectionStatus q r =
     Disconnected Text
   | Connecting
-  | Connected (IO (), (q -> IO r))
+  | Connected (IO (), (q -> IO r), (q -> IO ()), IO r)

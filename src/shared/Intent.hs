@@ -1,10 +1,9 @@
 module Intent(Intent(..)) where
 
 import Apecs
-import Direction(Direction)
 import Codec.Serialise(Serialise)
 import GHC.Generics(Generic)
-import qualified Direction as Dir
+import Direction(Direction)
 
 data Intent =
     Quit

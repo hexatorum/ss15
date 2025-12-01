@@ -1,7 +1,6 @@
 module Components(ServerEntity, ClientEntity, Camera(..), Client(..)) where
 
 import Apecs
-import Apecs.TH (makeWorld, makeMapComponents)
 
 import Data.Semigroup
 import Data.Monoid

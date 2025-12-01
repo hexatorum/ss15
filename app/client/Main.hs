@@ -1,38 +1,43 @@
 module Main (main) where
 
 import Control.Monad (foldM_, unless, when)
+import Control.Concurrent.STM 
+import Control.Concurrent.STM.TVar
+
 import Data.Bits
 import Data.Text(Text)
 import Data.Maybe
+import Data.ByteString (ByteString)
+import Data.ByteString qualified as ByteString
+import Data.Vector.Storable (Vector)
+import Data.Vector.Storable qualified as Vector
+import Data.StateVar
+
 import System.Exit
 import System.IO
-import Data.ByteString (ByteString)
-import qualified Data.ByteString as ByteString
-import Data.Vector.Storable (Vector)
-import qualified Data.Vector.Storable as Vector
+
 import Foreign
 
 import Linear
+
 import Codec.Picture
-import Data.StateVar
-import Control.Concurrent.STM 
-import Control.Concurrent.STM.TVar
-import qualified Client.ImGui as Im
+
+import Client.Renderer qualified as Renderer
+import Client.Renderer.Shader qualified as Shader
+import Client.Renderer (Renderer(..))
+import Client.ImGui qualified as Im
 import DearImGui.OpenGL3
-import qualified DearImGui.Raw.IO as ImIO
+import DearImGui.Raw.IO qualified as ImIO
 import DearImGui.SDL
+import SDL qualified
 import DearImGui.SDL.OpenGL
-import qualified Graphics.Rendering.OpenGL.GL as GL
-import qualified SDL
+import Graphics.Rendering.OpenGL.GL qualified as GL
 
 import Network.ConnectionStatus
 import Network.Message
-import qualified Direction
+import Direction qualified
 import Intent (Intent)
-import qualified Intent
-import Client.Renderer (Renderer(..))
-import qualified Client.Renderer as Renderer
-import qualified Client.Renderer.Shader as Shader
+import Intent qualified
 
 import Client.UI.ConnectMenu
 

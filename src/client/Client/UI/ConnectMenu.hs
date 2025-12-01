@@ -1,6 +1,7 @@
 module Client.UI.ConnectMenu(drawConnectMenu, newConnectMenu, ConnectMenu(..)) where
 
-import qualified Client.ImGui as Im
+import Codec.Serialise (Serialise)
+import Client.ImGui qualified as Im
 import Control.Concurrent
 import Control.Concurrent.STM
 import Control.Concurrent.STM.TVar
@@ -8,7 +9,7 @@ import Control.Monad(void, when, forever)
 import Control.Monad.Extra(whenM)
 import Control.Exception(try, SomeException(..))
 import Network.Message
-import Network.QUIC.Simple
+import Network.Client qualified as Client
 import Network.ConnectionStatus
 import Data.Text(Text, unpack, pack)
 import System.Timeout(timeout)
@@ -22,13 +23,12 @@ data ConnectMenu = ConnectMenu
 newConnectMenu :: STM ConnectMenu
 newConnectMenu = ConnectMenu <$> newTVar "127.0.0.1" <*> newTVar "" <*> newTVar ""
 
-drawConnectMenu :: ConnectMenu -> TVar (ConnectionStatus ClientMessage ServerMessage) -> IO ()
+drawConnectMenu :: ConnectMenu -> TVar (ConnectionStatus Ping Ping) -> IO ()
 drawConnectMenu ConnectMenu{username, password, server_ip} connInfo = do
   connStatus <- readTVarIO connInfo
   case connStatus of
     Connected _ -> pure ()
-    _           -> Im.withWindowOpen "connect to server"
-      case connStatus of
+    _           -> Im.withWindowOpen "connect to server" case connStatus of
         Disconnected str -> do
           Im.text "Server IP:"
           Im.sameLine
@@ -48,6 +48,36 @@ drawConnectMenu ConnectMenu{username, password, server_ip} connInfo = do
           Im.setNextItemWidth 150
           void $ Im.inputText "##toconnect_password" password 128
 
+          whenM (Im.button "connect") do
+            hostname <- readTVarIO server_ip
+            name <- readTVarIO username
+            pass <- readTVarIO password
+
+            atomically $ writeTVar connInfo Connecting
+            void $ forkIO $ timeout 5000000 (Client.startClient (unpack hostname) "2525") >>=
+              \case
+                Just (stop, call, cast, pollEvent) -> do
+                  let
+                    stopManual = do
+                      stop
+                      atomically $ writeTVar connInfo $ Disconnected "manually disconnected from the server"
+                  atomically $ writeTVar connInfo $ Connected (stopManual, call, cast, pollEvent)
+
+                  void $ forkIO $ forever do
+                    threadDelay 2000000
+                    timeout 1000000 (try $ call Ping) >>= \case
+                      Just (Right Pong) -> pure ()
+                      Just (Left (SomeException e)) -> do
+                        atomically $ writeTVar connInfo $ Disconnected (pack $ show e)
+                        stop
+                        error "exception occured"
+                      Nothing -> do
+                        atomically $ writeTVar connInfo $ Disconnected "disconnected"
+                        stop
+                        error "disconnected"
+                Nothing -> atomically $ writeTVar connInfo $ Disconnected "no response from server within 5s"
+
+          {-
           whenM (Im.button "connect") do
             hostname <- readTVarIO server_ip
             name <- readTVarIO username
@@ -79,6 +109,7 @@ drawConnectMenu ConnectMenu{username, password, server_ip} connInfo = do
                           stop
                           error "disconnected"
                   Nothing -> atomically $ writeTVar connInfo $ Disconnected "unable to establish connection"
+          -}
 
           Im.text str
           pure ()

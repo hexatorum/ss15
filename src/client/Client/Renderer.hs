@@ -4,8 +4,8 @@ module Client.Renderer (
   loadImage
 ) where
 
-import qualified SDL
-import qualified Graphics.Rendering.OpenGL.GL as GL
+import SDL qualified
+import Graphics.Rendering.OpenGL.GL qualified as GL
 import Client.Renderer.Shader (Shader)
 import Codec.Picture
 import System.Exit

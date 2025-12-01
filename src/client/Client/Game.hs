@@ -2,8 +2,8 @@ module Client.Game (runGame) where
 
 import Apecs
 import Linear
-import qualified Graphics.Rendering.OpenGL as GL
-import qualified SDL
+import Graphics.Rendering.OpenGL qualified as GL
+import SDL qualified
 
 import Components
 

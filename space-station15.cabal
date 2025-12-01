@@ -76,6 +76,7 @@ library
       ExistentialQuantification
       FunctionalDependencies
       BlockArguments
+      ImportQualifiedPost
       GADTs
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
@@ -120,6 +121,7 @@ executable space-station15-client
       Client.Renderer
       Client.Renderer.Shader
       Client.UI.ConnectMenu
+      Network.Client
       Paths_space_station15
   autogen-modules:
       Paths_space_station15
@@ -165,6 +167,7 @@ executable space-station15-client
       ExistentialQuantification
       FunctionalDependencies
       BlockArguments
+      ImportQualifiedPost
       GADTs
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
@@ -210,6 +213,7 @@ executable space-station15-editor
       Client.Renderer
       Client.Renderer.Shader
       Client.UI.ConnectMenu
+      Network.Client
       Paths_space_station15
   autogen-modules:
       Paths_space_station15
@@ -255,6 +259,7 @@ executable space-station15-editor
       ExistentialQuantification
       FunctionalDependencies
       BlockArguments
+      ImportQualifiedPost
       GADTs
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
@@ -340,6 +345,7 @@ executable space-station15-server
       ExistentialQuantification
       FunctionalDependencies
       BlockArguments
+      ImportQualifiedPost
       GADTs
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:

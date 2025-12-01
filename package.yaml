@@ -106,6 +106,7 @@ default-extensions:
 - ExistentialQuantification
 - FunctionalDependencies
 - BlockArguments
+- ImportQualifiedPost
 - GADTs
 
 executables:
