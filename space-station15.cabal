@@ -25,9 +25,10 @@ source-repository head
 
 library
   exposed-modules:
-      Components
-      Direction
-      Intent
+      Game
+      Game.Components
+      Game.Direction
+      Game.Intent
       Network.ConnectionStatus
       Network.Message
   other-modules:
@@ -115,12 +116,13 @@ library
 executable space-station15-client
   main-is: Main.hs
   other-modules:
-      Client.Game
-      Client.ImGui
-      Client.RectPack
-      Client.Renderer
-      Client.Renderer.Shader
-      Client.UI.ConnectMenu
+      Game.Client
+      Game.Client.Renderer
+      Game.Client.Renderer.RectPacker
+      Game.Client.Renderer.Shader
+      Game.Client.World
+      Game.UI.ConnectMenu
+      Im
       Network.Client
       Paths_space_station15
   autogen-modules:
@@ -204,102 +206,10 @@ executable space-station15-client
     , x509
   default-language: Haskell2010
 
-executable space-station15-editor
-  main-is: Main.hs
-  other-modules:
-      Client.Game
-      Client.ImGui
-      Client.RectPack
-      Client.Renderer
-      Client.Renderer.Shader
-      Client.UI.ConnectMenu
-      Network.Client
-      Paths_space_station15
-  autogen-modules:
-      Paths_space_station15
-  hs-source-dirs:
-      app/editor
-      src/client
-  default-extensions:
-      TypeFamilies
-      TypeFamilyDependencies
-      BangPatterns
-      KindSignatures
-      TypeOperators
-      DataKinds
-      QuasiQuotes
-      InstanceSigs
-      EmptyCase
-      LambdaCase
-      MultiWayIf
-      NamedFieldPuns
-      DisambiguateRecordFields
-      DuplicateRecordFields
-      RecordWildCards
-      TupleSections
-      DeriveFoldable
-      DeriveFunctor
-      DeriveGeneric
-      DeriveLift
-      DeriveTraversable
-      DerivingStrategies
-      StandaloneDeriving
-      FlexibleContexts
-      FlexibleInstances
-      MultiParamTypeClasses
-      ScopedTypeVariables
-      TemplateHaskell
-      TypeApplications
-      GeneralizedNewtypeDeriving
-      OverloadedStrings
-      ConstraintKinds
-      RankNTypes
-      DefaultSignatures
-      PatternSynonyms
-      ExistentialQuantification
-      FunctionalDependencies
-      BlockArguments
-      ImportQualifiedPost
-      GADTs
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      JuicyPixels
-    , OpenAL
-    , OpenGL
-    , StateVar
-    , aeson
-    , apecs
-    , async
-    , base >=4.7 && <5
-    , bytestring
-    , containers
-    , crypton
-    , dear-imgui
-    , exceptions
-    , extra
-    , hourglass
-    , lens
-    , linear
-    , memory
-    , network
-    , quic
-    , quic-simple
-    , random
-    , sdl2
-    , serialise
-    , space-station15
-    , stm
-    , text
-    , tls
-    , unliftio
-    , vector
-    , x509
-  default-language: Haskell2010
-
 executable space-station15-server
   main-is: Main.hs
   other-modules:
-      Server.Simulation
+      Game.Server.Simulation
       Paths_space_station15
   autogen-modules:
       Paths_space_station15

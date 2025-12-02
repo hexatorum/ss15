@@ -1,17 +1,28 @@
-module Client.UI.ConnectMenu(drawConnectMenu, newConnectMenu, ConnectMenu(..)) where
+module Game.UI.ConnectMenu(drawConnectMenu, newConnectMenu, ConnectMenu(..)) where
 
 import Codec.Serialise (Serialise)
-import Client.ImGui qualified as Im
+
+import Im qualified
+
 import Control.Concurrent
 import Control.Concurrent.STM
 import Control.Concurrent.STM.TVar
-import Control.Monad(void, when, forever)
+import Control.Monad
 import Control.Monad.Extra(whenM)
+
 import Control.Exception(try, SomeException(..))
+
 import Network.Message
 import Network.Client qualified as Client
 import Network.ConnectionStatus
+
+import Apecs
+
+import Game.Client.World(World)
+import Game.Components
+
 import Data.Text(Text, unpack, pack)
+
 import System.Timeout(timeout)
 
 data ConnectMenu = ConnectMenu
@@ -23,8 +34,9 @@ data ConnectMenu = ConnectMenu
 newConnectMenu :: STM ConnectMenu
 newConnectMenu = ConnectMenu <$> newTVar "127.0.0.1" <*> newTVar "" <*> newTVar ""
 
-drawConnectMenu :: ConnectMenu -> TVar (ConnectionStatus Ping Ping) -> IO ()
-drawConnectMenu ConnectMenu{username, password, server_ip} connInfo = do
+-- TODO: split this into functions PLEASE
+drawConnectMenu :: World -> ConnectMenu -> TVar (ConnectionStatus Message Message) -> IO ()
+drawConnectMenu world ConnectMenu{username, password, server_ip} connInfo = do
   connStatus <- readTVarIO connInfo
   case connStatus of
     Connected _ -> pure ()
@@ -54,28 +66,35 @@ drawConnectMenu ConnectMenu{username, password, server_ip} connInfo = do
             pass <- readTVarIO password
 
             atomically $ writeTVar connInfo Connecting
-            void $ forkIO $ timeout 5000000 (Client.startClient (unpack hostname) "2525") >>=
-              \case
-                Just (stop, call, cast, pollEvent) -> do
-                  let
-                    stopManual = do
-                      stop
-                      atomically $ writeTVar connInfo $ Disconnected "manually disconnected from the server"
-                  atomically $ writeTVar connInfo $ Connected (stopManual, call, cast, pollEvent)
+            void $ forkIO $ timeout 5000000 (Client.startClient (unpack hostname) "2525") >>= \case
+              Just (stop, call, cast, pollEvent) -> do
+                let
+                  stopManual = do
+                    stop
+                    atomically $ writeTVar connInfo $ Disconnected "manually disconnected from the server"
+                atomically $ writeTVar connInfo $ Connected (stopManual, call, cast, pollEvent)
 
-                  void $ forkIO $ forever do
-                    threadDelay 2000000
-                    timeout 1000000 (try $ call Ping) >>= \case
-                      Just (Right Pong) -> pure ()
-                      Just (Left (SomeException e)) -> do
-                        atomically $ writeTVar connInfo $ Disconnected (pack $ show e)
-                        stop
-                        error "exception occured"
-                      Nothing -> do
-                        atomically $ writeTVar connInfo $ Disconnected "disconnected"
-                        stop
-                        error "disconnected"
-                Nothing -> atomically $ writeTVar connInfo $ Disconnected "no response from server within 5s"
+                void $ call (TryLogin name pass) >>= \case
+                  (LoginSuccess e) -> do
+                    putStrLn $ "YAY! LOGIN SUCCESS! MY ENTITY NUMBER IS " <> (show e)
+                    runWith world $ newEntity (Client, NetEntity e)
+                  LoginFail -> do
+                    atomically $ writeTVar connInfo $ Disconnected "server reported login fail"
+                    error "disconnect"
+
+                void $ forkIO $ forever do
+                  threadDelay 2000000
+                  timeout 1000000 (try $ call Ping) >>= \case
+                    Just (Right Pong) -> pure ()
+                    Just (Left (SomeException e)) -> do
+                      atomically $ writeTVar connInfo $ Disconnected (pack $ show e)
+                      stop
+                      error "exception occured"
+                    Nothing -> do
+                      atomically $ writeTVar connInfo $ Disconnected "disconnected"
+                      stop
+                      error "disconnected"
+              Nothing -> atomically $ writeTVar connInfo $ Disconnected "no response from server within 5s"
 
           {-
           whenM (Im.button "connect") do

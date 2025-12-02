@@ -1,16 +1,21 @@
-module Client.Renderer (
+module Game.Client.Renderer (
   Renderer(..),
   m44ToGL,
   loadImage
 ) where
 
 import SDL qualified
+
 import Graphics.Rendering.OpenGL.GL qualified as GL
-import Client.Renderer.Shader (Shader)
+
 import Codec.Picture
+
 import System.Exit
 import System.IO
+
 import Linear
+
+import Game.Client.Renderer.Shader (Shader)
 
 data Renderer = Renderer {
   window :: SDL.Window,

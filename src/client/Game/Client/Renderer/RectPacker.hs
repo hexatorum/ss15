@@ -1,7 +1,7 @@
-module Client.RectPack (
+module Game.Client.Renderer.RectPacker (
   Packer(..),
   Rect(..),
-  makePacker,
+  mkPacker,
   packRect,
   packRects
 ) where
@@ -15,8 +15,8 @@ data Packer = Packer {
   lh :: Int
 }
 
-makePacker :: Int -> Int -> Packer
-makePacker w h = Packer 0 0 w h 0
+mkPacker :: Int -> Int -> Packer
+mkPacker w h = Packer 0 0 w h 0
 
 data Rect = Rect {
   x, y, w, h :: Int

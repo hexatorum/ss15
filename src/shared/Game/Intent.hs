@@ -1,9 +1,9 @@
-module Intent(Intent(..)) where
+module Game.Intent(Intent(..)) where
 
 import Apecs
 import Codec.Serialise(Serialise)
 import GHC.Generics(Generic)
-import Direction(Direction)
+import Game.Direction(Direction)
 
 data Intent =
     Quit

@@ -1,4 +1,4 @@
-module Client.ImGui (
+module Im (
   beginFlags,
   withWindowFlags,
   withWindowOpenFlags,

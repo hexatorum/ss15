@@ -1,4 +1,4 @@
-module Client.Renderer.Shader (
+module Game.Client.Renderer.Shader (
   Shader,
   fromByteStrings,
   fromFiles,

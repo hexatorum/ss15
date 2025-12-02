@@ -22,10 +22,10 @@ import Linear
 
 import Codec.Picture
 
-import Client.Renderer qualified as Renderer
-import Client.Renderer.Shader qualified as Shader
-import Client.Renderer (Renderer(..))
-import Client.ImGui qualified as Im
+import Game.Client.Renderer qualified as Renderer
+import Game.Client.Renderer.Shader qualified as Shader
+import Game.Client.Renderer (Renderer(..))
+import Im qualified
 import DearImGui.OpenGL3
 import DearImGui.Raw.IO qualified as ImIO
 import DearImGui.SDL
@@ -35,11 +35,11 @@ import Graphics.Rendering.OpenGL.GL qualified as GL
 
 import Network.ConnectionStatus
 import Network.Message
-import Direction qualified
-import Intent (Intent)
-import Intent qualified
 
-import Client.UI.ConnectMenu
+import Game
+import Game.UI.ConnectMenu
+import Game.Client
+import Game.Client.World
 
 -- TODO: implement tile layers
 type Tile = Int
@@ -68,7 +68,7 @@ indices :: Vector Word32
 indices = Vector.fromList [0, 1, 2, 1, 2, 3]
 
 action :: Intent -> IO ()
-action Intent.Quit = exitSuccess
+action Quit = exitSuccess
 action _ = pure ()
 
 intentFromKey :: SDL.KeyboardEventData -> Maybe Intent
@@ -76,19 +76,19 @@ intentFromKey (SDL.KeyboardEventData _ SDL.Released _ _) = Nothing
 intentFromKey (SDL.KeyboardEventData _ SDL.Pressed True _) = Nothing
 intentFromKey (SDL.KeyboardEventData _ SDL.Pressed False keysym) = Just $
   case SDL.keysymKeycode keysym of
-    SDL.KeycodeEscape -> Intent.Quit
-    SDL.KeycodeW -> Intent.Move Direction.Up
-    SDL.KeycodeS -> Intent.Move Direction.Down
-    SDL.KeycodeA -> Intent.Move Direction.Left
-    SDL.KeycodeD -> Intent.Move Direction.Right
-    _ -> Intent.Wait
+    SDL.KeycodeEscape -> Quit
+    SDL.KeycodeW -> Move UP
+    SDL.KeycodeS -> Move DOWN
+    SDL.KeycodeA -> Move LEFT
+    SDL.KeycodeD -> Move RIGHT
+    _ -> Wait
 
 eventsToIntents :: [SDL.Event] -> [Intent]
 eventsToIntents = mapMaybe (payloadToIntent . SDL.eventPayload)
   where
     payloadToIntent :: SDL.EventPayload -> Maybe Intent
     payloadToIntent (SDL.KeyboardEvent k)       = intentFromKey k
-    payloadToIntent SDL.QuitEvent               = Just Intent.Quit
+    payloadToIntent SDL.QuitEvent               = Just Quit
     payloadToIntent _                           = Nothing
 
 drawTiles :: Renderer -> [[Tile]] -> IO ()
@@ -122,8 +122,19 @@ drawTiles renderer =
 
       GL.drawElements GL.Triangles 6 GL.UnsignedInt nullPtr
 
-loop :: Renderer -> IO () -> IO ()
-loop renderer buildUI = do
+renderGame :: World -> IO ()
+renderGame world =
+  GL.clear [GL.ColorBuffer]
+
+  GL.currentProgram $= Just shader
+  GL.bindVertexArrayObject $= Just vertexArray
+  runWith world $ draw world
+  drawTiles renderer tiles
+  GL.bindVertexArrayObject $= Nothing
+
+loop :: (TVar (ConnectionStatus Message Message)) -> Renderer.Renderer -> IO () -> IO ()
+loop connInfo renderer buildUI = do
+  connStatus <- readTVarIO connInfo
   let
     window = Renderer.window renderer
     shader = Renderer.shader renderer
@@ -132,7 +143,7 @@ loop renderer buildUI = do
   events <- pollEventsWithImGui
   let intents = eventsToIntents events
 
-  let quit = Intent.Quit `elem` intents
+  let quit = Quit `elem` intents
 
   openGL3NewFrame
   sdl2NewFrame
@@ -158,22 +169,21 @@ loop renderer buildUI = do
 
   Im.popStyleVar 1
 
-  GL.clear [GL.ColorBuffer]
-
-  GL.currentProgram $= Just shader
-  GL.bindVertexArrayObject $= Just vertexArray
-  drawTiles renderer tiles
-  GL.bindVertexArrayObject $= Nothing
+  case connStatus of
+    Connected _ -> renderGame
+    _ -> pure ()
 
   Im.render
   openGL3RenderDrawData =<< Im.getDrawData
 
   SDL.glSwapWindow window
 
-  unless quit $ loop renderer buildUI
+  unless quit $ loop connInfo renderer buildUI
 
 main = do
   SDL.initialize [SDL.InitVideo]
+
+  world <- initGame
 
   window <- SDL.createWindow "Space Station 15" SDL.defaultWindow {
     SDL.windowPosition = SDL.Centered,
@@ -285,7 +295,7 @@ main = do
 
   GL.bindVertexArrayObject $= Nothing
 
-  connInfo <- atomically $ newTVar $ Disconnected ""
+  connInfo <- newTVarIO $ Disconnected ""
 
   connectMenu <- atomically $ newConnectMenu
   let drawUI = drawConnectMenu connectMenu connInfo
@@ -298,7 +308,7 @@ main = do
     Renderer.vertexArray = vertexArray
   }
 
-  loop renderer drawUI
+  loop connInfo renderer drawUI
 
   openGL3Shutdown
   sdl2Shutdown
