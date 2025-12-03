@@ -1,3 +1,7 @@
+{-|
+This module describes player actions like using items, moving or quitting the game.
+|-}
+
 module Game.Intent(Intent(..)) where
 
 import Apecs

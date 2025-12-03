@@ -20,6 +20,9 @@ import Linear
 type ServerEntity = Entity
 type ClientEntity = Entity
 
+-- Client to Server ID map
+type ServerEntityId = Int
+
 newtype Camera = Camera (V2 Float)
 instance Component Camera where
   type Storage Camera = Global Camera
@@ -30,7 +33,7 @@ data Client = Client
 instance Component Client where
   type Storage Client = Unique Client
 
-newtype NetEntity = NetEntity Int
+newtype NetEntity = NetEntity ServerEntityId
   deriving newtype (Eq, Ord, Show, Enum)
 instance Component NetEntity where
   type Storage NetEntity = Reactive (EnumMap NetEntity) (Map NetEntity)

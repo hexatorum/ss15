@@ -1,4 +1,4 @@
-module Game.Client (runGame, initGame, step, draw) where
+module Game.Client (runGame, runDraw, initGame, step, draw) where
 
 import SDL qualified
 import Apecs
@@ -21,6 +21,9 @@ step dT = pure ()
 
 draw :: System' ()
 draw = pure ()
+
+runDraw :: World -> IO ()
+runDraw world = runWith world draw
 
 runGame :: Float -> World -> IO ()
 runGame dT world = runWith world $ step dT

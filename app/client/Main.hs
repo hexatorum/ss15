@@ -1,8 +1,10 @@
 module Main (main) where
 
 import Control.Monad (foldM_, unless, when)
+import Control.Concurrent
 import Control.Concurrent.STM 
 import Control.Concurrent.STM.TVar
+import Control.Concurrent.STM.TMVar
 
 import Data.Bits
 import Data.Text(Text)
@@ -122,19 +124,18 @@ drawTiles renderer =
 
       GL.drawElements GL.Triangles 6 GL.UnsignedInt nullPtr
 
-renderGame :: World -> IO ()
-renderGame world =
+renderGame :: World -> Renderer -> IO ()
+renderGame world renderer =
   GL.clear [GL.ColorBuffer]
 
   GL.currentProgram $= Just shader
   GL.bindVertexArrayObject $= Just vertexArray
-  runWith world $ draw world
+  runDraw world
   drawTiles renderer tiles
   GL.bindVertexArrayObject $= Nothing
 
-loop :: (TVar (ConnectionStatus Message Message)) -> Renderer.Renderer -> IO () -> IO ()
-loop connInfo renderer buildUI = do
-  connStatus <- readTVarIO connInfo
+loop :: TMVar World -> Renderer -> IO () -> IO ()
+loop worldTMVar renderer buildUI = do
   let
     window = Renderer.window renderer
     shader = Renderer.shader renderer
@@ -168,22 +169,20 @@ loop connInfo renderer buildUI = do
     Im.text "TODO: use this overlay for something"
 
   Im.popStyleVar 1
-
-  case connStatus of
-    Connected _ -> renderGame
-    _ -> pure ()
+ 
+  (atomically $ tryReadTMVar worldTMVar) >>= \case
+    Just world -> renderGame world renderer
+    Nothing -> pure ()
 
   Im.render
   openGL3RenderDrawData =<< Im.getDrawData
 
   SDL.glSwapWindow window
 
-  unless quit $ loop connInfo renderer buildUI
+  unless quit $ loop worldTMVar renderer buildUI
 
 main = do
   SDL.initialize [SDL.InitVideo]
-
-  world <- initGame
 
   window <- SDL.createWindow "Space Station 15" SDL.defaultWindow {
     SDL.windowPosition = SDL.Centered,
@@ -295,10 +294,11 @@ main = do
 
   GL.bindVertexArrayObject $= Nothing
 
+  worldTMVar <- newEmptyTMVarIO
   connInfo <- newTVarIO $ Disconnected ""
 
   connectMenu <- atomically $ newConnectMenu
-  let drawUI = drawConnectMenu connectMenu connInfo
+  let drawUI = drawConnectMenu worldTMVar connInfo connectMenu
 
   let renderer = Renderer {
     Renderer.window = window,
@@ -308,7 +308,11 @@ main = do
     Renderer.vertexArray = vertexArray
   }
 
-  loop connInfo renderer drawUI
+  void $ forkIO do
+    world <- atomically $ readTMVar worldTMVar
+    runGame (1/60) world
+
+  loop worldTMVar renderer drawUI
 
   openGL3Shutdown
   sdl2Shutdown

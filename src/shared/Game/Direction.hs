@@ -1,3 +1,6 @@
+{-|
+This module describes directions for orientation, movement etc.
+|-}
 module Game.Direction(Direction(..)) where
 
 import Codec.Serialise(Serialise)
